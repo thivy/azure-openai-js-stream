@@ -34,32 +34,35 @@ export class AzureOpenAI {
 
   private async processResponse(
     reader: ReadableStreamDefaultReader<Uint8Array>,
-    controller: ReadableStreamDefaultController<string>
+    controller: ReadableStreamDefaultController<Uint8Array>
   ) {
+    const SSEEvents = {
+      onError: (error: any) => {
+        controller.error(error);
+      },
+      onData: (data: string) => {
+        const queue = new TextEncoder().encode(data);
+        controller.enqueue(queue);
+      },
+      onComplete: () => {
+        controller.close();
+      },
+    };
+
     const decoder = new TextDecoder();
-    let accumulatedData = "";
-    const sseParser = new SSEParser(controller);
+    const sseParser = new SSEParser(SSEEvents);
 
     while (true) {
       const { value, done } = await reader.read();
-      if (done) {
-        if (accumulatedData) {
-          sseParser.parseSSE(accumulatedData);
-          accumulatedData = "";
-        }
-        break;
-      }
+      if (done) break;
 
-      const chunkValue = decoder.decode(value, { stream: true });
-      accumulatedData = sseParser.parseSSE(chunkValue + accumulatedData);
+      const chunkValue = decoder.decode(value);
+      sseParser.parseSSE(chunkValue);
     }
-
-    controller.close();
-    reader.releaseLock();
   }
 
   private createStreamFromResponse(response: Response) {
-    const source: UnderlyingDefaultSource<any> = {
+    const source: UnderlyingDefaultSource<Uint8Array> = {
       start: async (controller) => {
         if (response && response.body && response.ok) {
           const reader = response.body.getReader();
@@ -67,6 +70,9 @@ export class AzureOpenAI {
             await this.processResponse(reader, controller);
           } catch (e) {
             controller.error(e);
+          } finally {
+            controller.close();
+            reader.releaseLock();
           }
         } else {
           if (!response.ok) {

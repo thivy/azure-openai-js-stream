@@ -30,7 +30,14 @@ const mapStyle = (style: ConverSationStyle) => {
   }
 };
 
-const call = async (payload: IChatGPTPayload) => {
+/**
+ * Main entry point for the API.
+ **/
+
+export async function POST(request: Request) {
+  // read the request body as JSON
+  const payload = (await request.json()) as IChatGPTPayload;
+
   const config: AzureOpenAIConfiguration = {
     basePath: process.env.AZURE_OPEN_AI_BASE,
     apiKey: process.env.AZURE_OPEN_AI_KEY,
@@ -39,7 +46,7 @@ const call = async (payload: IChatGPTPayload) => {
 
   const azure = new AzureOpenAI(config);
 
-  return await azure.createChatCompletion({
+  const stream = await azure.createChatCompletion({
     messages: [
       {
         role: "system",
@@ -50,18 +57,7 @@ const call = async (payload: IChatGPTPayload) => {
         content: payload.prompt, // set the prompt to the user's input
       },
     ],
-    stream: true,
+    stream: true, // stream the response
   });
-};
-
-/**
- * Main entry point for the API.
- **/
-
-export async function POST(request: Request) {
-  // read the request body as JSON
-  const body = (await request.json()) as IChatGPTPayload;
-
-  const stream = await call(body);
   return new Response(stream);
 }
