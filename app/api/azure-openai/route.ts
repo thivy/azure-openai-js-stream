@@ -24,7 +24,7 @@ const mapStyle = (style: ConverSationStyle) => {
     case "NEUTRAL":
       return `You are a confident AI Assistant with neutral emotion, and your primary goal is to answer questions with neutral emotion.`;
     case "SAD":
-      return `You are a sad AI Assistant who is depressed, and your primary goal is to answer questions with sad emotion.`;
+      return `You are a sad AI Assistant who is sad, and your primary goal is to answer questions with sad emotion.`;
     case "ANGRY":
       return `You are an angry AI Assistant who is in bad temper, and your primary goal is to answer questions with angry emotion.`;
   }
