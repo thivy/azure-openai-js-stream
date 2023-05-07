@@ -50,7 +50,7 @@ Before we delve into the code let's look at the steps required to consume Azure 
     
     These chunks, each beginning with `data` contain information, such as an ID, content, creation time, and model. As shown in the example below, you can see how each chunk represents a piece of the answer that, when put together, forms a complete response. To indicate the end of the stream, a final chunk with "\[DONE\]" is sent allowing the UI to prompt for the next action.
     
-    ```json
+    ```
     //chuck one
     data: {"id":"chatcmpl-7C1xK1ZAXweiPnsL35Alr7DVQz0xH","object":"chat.completion.chunk","created":1683101810,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":" you"}}],"usage":null}
     
