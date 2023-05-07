@@ -11,6 +11,7 @@ First, generate a .env.local file in the root directory and insert the following
 ```bash
 AZURE_OPEN_AI_KEY = 'YOUR API'
 AZURE_OPEN_AI_BASE = 'https://YOUR_AZURE_OPENAI_NAME.openai.azure.com/openai/deployments/YOUR_AZURE_OPENAI_DEPLOYMENT_NAME'
+AZURE_OPEN_AI_CHAT_VERSION = '2023-03-15-preview'
 ```
 
 To install the required dependencies and launch the development server, execute the following commands:
