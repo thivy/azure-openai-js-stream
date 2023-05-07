@@ -1,4 +1,4 @@
-![intro](./images/app-demo.png)
+![intro](./images/app-intro.png)
 
 ## Setup Instructions
 
