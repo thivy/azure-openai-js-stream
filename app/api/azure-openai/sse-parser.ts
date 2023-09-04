@@ -49,7 +49,7 @@ export class SSEParser {
   private processEvent(data: string): string {
     try {
       const json = JSON.parse(data);
-      const text = json.choices[0].delta?.content || "";
+      const text = json.choices[0]?.delta?.content || "";
       this.onData(text);
       return text;
     } catch (e) {
